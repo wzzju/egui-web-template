@@ -4,7 +4,17 @@ version = "0.1.0"
 authors = ["Zhen Wang <wzzjuustc@gmail.com>"]
 edition = "2021"
 rust-version = "1.75"
+include = [
+    "assets/icon-256.png",
+]
 
+[features]
+# Enable the `chrono` feature, which is equivalent to the following command:
+# `cargo build --features="chrono"` or `trunk serve --features="chrono"`.
+default = ["chrono"]
+chrono = ["egui_extras/datepicker", "dep:chrono"]
+## Allow serialization using [`serde`](https://docs.rs/serde).
+serde = ["egui/serde", "egui_plot/serde"]
 
 [dependencies]
 egui = "0.25.0"
@@ -15,9 +25,13 @@ eframe = { version = "0.25.0", default-features = false, features = [
     "persistence",   # Enable restoring app state when restarting the app.
 ] }
 log = "0.4"
-
 # You only need serde if you want app persistence:
 serde = { version = "1", features = ["derive"] }
+egui_plot = "0.25.0"
+egui_extras = { version = "0.25.0", features = ["all_loaders"] }
+image = { version = "0.24", features = ["jpeg", "png"] }
+#! ### Optional dependencies
+chrono = { version = "0.4.33", optional = true, features = ["js-sys", "wasmbind"] }
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -27,14 +41,12 @@ env_logger = "0.10"
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen-futures = "0.4"
 
-
 [profile.release]
 opt-level = 2 # fast and small wasm
 
 # Optimize all dependencies even in debug builds:
 [profile.dev.package."*"]
 opt-level = 2
-
 
 [patch.crates-io]
 
